@@ -3,7 +3,6 @@ package cell.states;
 import cell.coordinates.CellCoordinates;
 
 import java.util.Map;
-import java.util.Objects;
 
 public class GeneralStateFactory implements CellStateFactory {
 
@@ -16,18 +15,5 @@ public class GeneralStateFactory implements CellStateFactory {
     @Override
     public CellState initialState(CellCoordinates cellCoordinates){
         return states.get(cellCoordinates);
-}
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof GeneralStateFactory)) return false;
-        GeneralStateFactory that = (GeneralStateFactory) o;
-        return Objects.equals(states, that.states);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(states);
     }
 }
