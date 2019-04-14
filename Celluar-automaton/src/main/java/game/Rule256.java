@@ -32,83 +32,58 @@ public class Rule256 extends Automaton1Dim {
 
         CellState[] neighborCellStates = new CellState[3];
         establishCellStates(neighborCells, neighborCellStates);
-
-        //dla 1 bitu
+        
         if(neighborCellStates[0] == BinaryState.ALIVE &&
                 neighborCellStates[1] == BinaryState.ALIVE &&
                 neighborCellStates[2] == BinaryState.ALIVE)
         {
-            if(numberOfRule[0]==1)
-                return BinaryState.ALIVE;
-            else
-                return BinaryState.DEAD;
+            return resolveNewState(numberOfRule, 0);
         }
         //dla 2 bitu
         else if(neighborCellStates[0] == BinaryState.ALIVE &&
                 neighborCellStates[1] == BinaryState.ALIVE &&
                 neighborCellStates[2] == BinaryState.DEAD)
         {
-            if(numberOfRule[1]==1)
-                return BinaryState.ALIVE;
-            else
-                return BinaryState.DEAD;
+            return resolveNewState(numberOfRule, 1);
         }
         //dla 3 bitu
         else if(neighborCellStates[0] == BinaryState.ALIVE &&
                 neighborCellStates[1] == BinaryState.DEAD &&
                 neighborCellStates[2] == BinaryState.ALIVE)
         {
-            if(numberOfRule[2]==1)
-                return BinaryState.ALIVE;
-            else
-                return BinaryState.DEAD;
+            return resolveNewState(numberOfRule, 2);
         }
         //dla 4 bitu
         else if(neighborCellStates[0] == BinaryState.ALIVE &&
                 neighborCellStates[1] == BinaryState.DEAD &&
                 neighborCellStates[2] == BinaryState.DEAD)
         {
-            if(numberOfRule[3]==1)
-                return BinaryState.ALIVE;
-            else
-                return BinaryState.DEAD;
+            return resolveNewState(numberOfRule, 3);
         }
         //dla 5 bitu
         else if(neighborCellStates[0] == BinaryState.DEAD &&
                 neighborCellStates[1] == BinaryState.ALIVE &&
                 neighborCellStates[2] == BinaryState.ALIVE)
         {
-            if(numberOfRule[4]==1)
-                return BinaryState.ALIVE;
-            else
-                return BinaryState.DEAD;
+            return resolveNewState(numberOfRule, 4);
         }
         //dla 6 bitu
         else if(neighborCellStates[0] == BinaryState.DEAD &&
                 neighborCellStates[1] == BinaryState.ALIVE &&
                 neighborCellStates[2] == BinaryState.DEAD)
         {
-            if(numberOfRule[5]==1)
-                return BinaryState.ALIVE;
-            else
-                return BinaryState.DEAD;
+            return resolveNewState(numberOfRule, 5);
         }
         //dla 7 bitu
         else if(neighborCellStates[0] == BinaryState.DEAD &&
                 neighborCellStates[1] == BinaryState.DEAD &&
                 neighborCellStates[2] == BinaryState.ALIVE)
         {
-            if(numberOfRule[6]==1)
-                return BinaryState.ALIVE;
-            else
-                return BinaryState.DEAD;
+            return resolveNewState(numberOfRule, 6);
         }
         //dla 8 bitu
         else {
-            if(numberOfRule[7]==1)
-                return BinaryState.ALIVE;
-            else
-                return BinaryState.DEAD;
+            return resolveNewState(numberOfRule, 7);
         }
     }
 
@@ -137,6 +112,15 @@ public class Rule256 extends Automaton1Dim {
                 neighborCellStates[i] = BinaryState.DEAD;
             }
             i++;
+        }
+    }
+
+    private CellState resolveNewState(int[] numberOfRule, int i) {
+        if (numberOfRule[i] == 1) {
+            return BinaryState.ALIVE;
+        }
+        else {
+            return BinaryState.DEAD;
         }
     }
 }
