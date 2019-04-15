@@ -24,6 +24,14 @@ public class Cell {
         return coordinates;
     }
 
+    public void setState(CellState state) {
+        this.state = state;
+    }
+
+    public void setCoordinates(CellCoordinates coordinates) {
+        this.coordinates = coordinates;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -32,7 +32,7 @@ public class Rule256 extends Automaton1Dim {
 
         CellState[] neighborCellStates = new CellState[3];
         establishCellStates(neighborCells, neighborCellStates);
-        
+
         if(neighborCellStates[0] == BinaryState.ALIVE &&
                 neighborCellStates[1] == BinaryState.ALIVE &&
                 neighborCellStates[2] == BinaryState.ALIVE)
