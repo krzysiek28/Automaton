@@ -21,7 +21,7 @@ public abstract class Automaton2Dim extends Automaton {
     @Override
     protected boolean hasNextCoordinates(CellCoordinates cellCoordinates){
         CellCoordinates2D coordinates = (CellCoordinates2D) cellCoordinates;
-        return !(coordinates.getX() > width && coordinates.getY() > height);
+        return !(coordinates.getX() >= width - 1 && coordinates.getY() >= height - 1);
     }
 
     @Override
@@ -32,11 +32,12 @@ public abstract class Automaton2Dim extends Automaton {
     @Override
     protected CellCoordinates nextCoordinates(CellCoordinates cellCoordinates) {
         CellCoordinates2D coordinates = (CellCoordinates2D) cellCoordinates;
-        return isLastElementInRow(coordinates) ?  new CellCoordinates2D(0, coordinates.getY()+1)
+        return isLastElementInRow(coordinates)
+                ? new CellCoordinates2D(0, coordinates.getY()+1)
                 : new CellCoordinates2D(coordinates.getX()+1, coordinates.getY());
     }
 
     private boolean isLastElementInRow(CellCoordinates2D cellCoordinates2D){
-        return cellCoordinates2D.getX() == width -1;
+        return cellCoordinates2D.getX() == width - 1;
     }
 }

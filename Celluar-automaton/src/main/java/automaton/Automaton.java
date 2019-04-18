@@ -13,7 +13,7 @@ import java.util.Set;
 
 public abstract class Automaton {
 
-    public Map<CellCoordinates, CellState> cells = new HashMap<>();
+    protected Map<CellCoordinates, CellState> cells = new HashMap<>();
 
     private CellNeighborhood neighborStrategy;
 
@@ -28,9 +28,13 @@ public abstract class Automaton {
         CellCoordinates coordinates = initialCoordinates();
         CellState state;
         while(hasNextCoordinates(coordinates)){
-            coordinates = nextCoordinates(coordinates);
-            state = stateFactory.initialState(coordinates);
-            cells.put(coordinates, state);
+            try {
+                coordinates = nextCoordinates(coordinates);
+                state = stateFactory.initialState(coordinates);
+                cells.put(coordinates, state);
+            } catch (Exception e){
+                System.out.println("dupa");
+            }
         }
     }
 
@@ -40,7 +44,7 @@ public abstract class Automaton {
 
     protected abstract CellCoordinates nextCoordinates(CellCoordinates cellCoordinates);
 
-    protected Automaton nextState(){
+    public Automaton nextState(){
         Automaton newAutomaton = newInstance(stateFactory, neighborStrategy);
         CellIterator previousIteration = cellIterator();
         CellIterator nextIteration = newAutomaton.cellIterator();
@@ -71,6 +75,10 @@ public abstract class Automaton {
     }
 
     protected abstract CellState nextCellState(Cell currentCell, Set<Cell> neighborsStates);
+
+    public Map<CellCoordinates, CellState> getCells(){
+        return this.cells;
+    }
 
     public class CellIterator{
         private CellCoordinates currentCoordinates;
