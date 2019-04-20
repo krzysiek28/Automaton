@@ -1,5 +1,6 @@
 package gui;
 
+import automaton.Automaton;
 import automaton.Automaton1Dim;
 import automaton.Automaton2Dim;
 import cell.Cell;
@@ -35,6 +36,19 @@ public class Board {
     private Pane board;
 
     private Set<Tile> tileSet = new HashSet<>();
+
+    private Set<Cell> cellSet;
+
+    private Automaton automaton;
+
+    public Board(Automaton automaton){
+        this.automaton = automaton;
+        this.cellSet = automaton.getCellSet();
+        this.cells = automaton.getCells();
+        this.xCells = resolveXCellCount(cells.keySet());
+        this.yCells = resolveYCellCount(cells.keySet());
+        initBoard();
+    }
 
     public Board(Map<CellCoordinates, CellState> cells){
         this.cells = cells;
@@ -100,6 +114,14 @@ public class Board {
         double cellWidth = BOARD_WIDTH/xCells;
         double cellHeight = BOARD_HEIGHT/yCells;
 
+//        for(Cell cell : cellSet){
+//            Tile tile = new Tile(cellWidth, cellHeight, cell);
+//            tile.setTranslateX(cellWidth * ((CellCoordinates2D)cell.getCoordinates()).getX());
+//            tile.setTranslateY(cellHeight * ((CellCoordinates2D)cell.getCoordinates()).getY());
+//            tileSet.add(tile);
+//            board.getChildren().add(tile);
+//        }
+
         for(int x = 0; x < xCells; x++){
             for(int y = 0; y < yCells; y++){
                 Tile tile = new Tile(cellWidth, cellHeight, new Cell(BinaryState.DEAD, new CellCoordinates2D(x, y)));
@@ -109,6 +131,10 @@ public class Board {
                 board.getChildren().add(tile);
             }
         }
+    }
+
+    public void update(){
+        tileSet.forEach(Tile::updateCellColor);
     }
 
     private class Tile extends StackPane {
@@ -135,16 +161,16 @@ public class Board {
             }
         }
 
+        public void updateCellColor(){
+            rectangle.setFill(resolveColor(cell.getState()));
+        }
+
         private Color resolveColor(CellState state){
             return state == BinaryState.ALIVE ? Color.BLACK : Color.WHITE;
         }
 
         public CellCoordinates getCellCoordinates(){
             return cell.getCoordinates();
-        }
-
-        public CellState getCellState(){
-            return cell.getState();
         }
     }
 }

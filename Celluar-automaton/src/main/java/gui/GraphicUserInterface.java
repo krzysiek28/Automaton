@@ -6,7 +6,10 @@ import cell.states.UniformStateFactory;
 import game.GameOfLife;
 import game.GameOfLifeHelper;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import neighbor.MooreNeighborhood;
@@ -17,28 +20,57 @@ public class GraphicUserInterface extends Application {
 
     private static int MAIN_APP_WIDTH = 1200;
 
+    private static int NEXT_STATE_BUTTON_HEIGHT = 50;
+
+    private static int NEXT_STATE_BUTTON_WIDTH = 200;
+
+    private static int xCellCount = 5;
+
+    private static int yCellCount = 5;
+
     private Automaton automaton;
 
-    private static int xCellCount = 30;
-
-    private static int yCellCount = 30;
-
     private GridPane mainWindow = new GridPane();
+
+    private Board board;
+
+    private Button nextStateButton = new Button();
 
     public GraphicUserInterface(){
     }
 
-    public static void main(String[] args) {
-        Application.launch(args);
+    private void setUpLayout(Board board){
+        mainWindow.setPrefSize(MAIN_APP_WIDTH, MAIN_APP_HEIGHT);
+        setUpNextStateButton();
+
+        mainWindow.add(board.initBoard(), 1,0);
+    }
+
+    private void setUpNextStateButton(){
+        nextStateButton.setText("Nowy stan");
+        nextStateButton.setPrefSize(NEXT_STATE_BUTTON_WIDTH, NEXT_STATE_BUTTON_HEIGHT);
+        addNextStateButtonListener();
+        mainWindow.add(nextStateButton, 1, 1);
+    }
+
+    private void addNextStateButtonListener(){
+        nextStateButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+//                automaton.nextState();
+                board.update();
+                System.out.println(automaton.getCells().values());
+            }
+        });
     }
 
     @Override
     public void start(Stage stage) {
-        mainWindow.setPrefSize(MAIN_APP_WIDTH, MAIN_APP_HEIGHT);
         automaton = createNewGameOfLife();
+        board = new Board(automaton);
+//        board = new Board(automaton.getCells());
 
-        Board board = new Board(automaton.getCells());
-        mainWindow.add(board.initBoard(), 0,1);
+        setUpLayout(board);
 
         stage.setTitle("Automaty komórkowe");
         stage.setScene(new Scene(mainWindow));

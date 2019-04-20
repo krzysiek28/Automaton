@@ -15,6 +15,8 @@ public abstract class Automaton {
 
     protected Map<CellCoordinates, CellState> cells = new HashMap<>();
 
+    private Set<Cell> cellSet;
+
     private CellNeighborhood neighborStrategy;
 
     private CellStateFactory stateFactory;
@@ -28,13 +30,9 @@ public abstract class Automaton {
         CellCoordinates coordinates = initialCoordinates();
         CellState state;
         while(hasNextCoordinates(coordinates)){
-            try {
-                coordinates = nextCoordinates(coordinates);
-                state = stateFactory.initialState(coordinates);
-                cells.put(coordinates, state);
-            } catch (Exception e){
-                System.out.println("dupa");
-            }
+            coordinates = nextCoordinates(coordinates);
+            state = stateFactory.initialState(coordinates);
+            cells.put(coordinates, state);
         }
     }
 
@@ -67,17 +65,21 @@ public abstract class Automaton {
     }
 
     private Set<Cell> mapCoordinates(Set<CellCoordinates> cellCoordinates){
-        Set<Cell> cellMap = new HashSet<>();
+        cellSet = new HashSet<>();
         for(CellCoordinates coordinates : cellCoordinates){
-            cellMap.add(new Cell(cells.get(coordinates), coordinates));
+            cellSet.add(new Cell(cells.get(coordinates), coordinates));
         }
-        return cellMap;
+        return cellSet;
     }
 
     protected abstract CellState nextCellState(Cell currentCell, Set<Cell> neighborsStates);
 
     public Map<CellCoordinates, CellState> getCells(){
         return this.cells;
+    }
+
+    public Set<Cell> getCellSet(){
+        return cellSet;
     }
 
     public class CellIterator{
