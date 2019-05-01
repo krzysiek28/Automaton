@@ -64,3 +64,32 @@ fabric.properties
 
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
+Celluar-automaton/target/classes/neighbor/VonNeumanNeighborhood.class
+Celluar-automaton/target/classes/neighbor/Neighborhood1D.class
+Celluar-automaton/target/classes/neighbor/MooreNeighborhood.class
+Celluar-automaton/target/classes/neighbor/CellNeighborhood.class
+Celluar-automaton/target/classes/gui/GraphicUserInterface.class
+Celluar-automaton/target/classes/gui/GraphicUserInterface$1.class
+Celluar-automaton/target/classes/gui/Board.class
+Celluar-automaton/target/classes/gui/Board$Tile.class
+Celluar-automaton/target/classes/cell/states/GeneralStateFactory.class
+Celluar-automaton/target/classes/cell/coordinates/CellCoordinates2D.class
+Celluar-automaton/target/classes/cell/coordinates/CellCoordinates1D.class
+Celluar-automaton/target/classes/cell/coordinates/CellCoordinates.class
+Celluar-automaton/target/classes/cell/Cell.class
+Celluar-automaton/target/classes/automaton/Automaton2Dim.class
+Celluar-automaton/target/classes/automaton/Automaton1Dim.class
+Celluar-automaton/target/classes/automaton/Automaton.class
+Celluar-automaton/target/classes/automaton/Automaton$CellIterator.class
+Celluar-automaton/target/classes/META-INF/automaton.kotlin_module
+Celluar-automaton/target/classes/gui/Structures.class
+Celluar-automaton/target/classes/gui/StructureHelper.class
+Celluar-automaton/target/classes/gui/MainAppPane.class
+Celluar-automaton/target/classes/gui/MainAppPane$1.class
+Celluar-automaton/target/classes/game/Rule256.class
+Celluar-automaton/target/classes/game/GameOfLifeHelper.class
+Celluar-automaton/target/classes/game/GameOfLife.class
+Celluar-automaton/target/classes/cell/states/UniformStateFactory.class
+Celluar-automaton/target/classes/cell/states/CellStateFactory.class
+Celluar-automaton/target/classes/cell/states/CellState.class
+Celluar-automaton/target/classes/cell/states/BinaryState.class
