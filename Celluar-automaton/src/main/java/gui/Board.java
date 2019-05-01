@@ -48,13 +48,6 @@ public class Board {
         initBoard();
     }
 
-    public Board(Map<CellCoordinates, CellState> cells){
-        this.cells = cells;
-        this.xCells = resolveXCellCount(cells.keySet());
-        this.yCells = resolveYCellCount(cells.keySet());
-        initBoard();
-    }
-
     private int resolveXCellCount(Set<CellCoordinates> cellCoordinates){
         if(is2DimCoordinate(cellCoordinates)){
             return 1 + cellCoordinates.stream()
@@ -100,12 +93,6 @@ public class Board {
         board.setPrefSize(BOARD_WIDTH, BOARD_HEIGHT);
         createBoard(xCells, yCells, cellSet);
         return board;
-    }
-
-    public void changeBoardCellCount(int xCells, int yCells) {
-        this.xCells = xCells;
-        this.yCells = yCells;
-        createBoard(xCells, yCells, cellSet);
     }
 
     private void createBoard(int xCells, int yCells, Set<Cell> cellSet){

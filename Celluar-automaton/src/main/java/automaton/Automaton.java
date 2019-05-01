@@ -50,10 +50,7 @@ public abstract class Automaton {
 
         cellSet = new HashSet<>();
         while(previousIteration.hasNext()){
-            Cell cell = previousIteration.next();
-            Set<CellCoordinates> neighborsCoordinates = neighborStrategy.cellNeighbors(cell.getCoordinates());
-            Set<Cell> neighbors = mapCoordinates(neighborsCoordinates);
-            CellState newState = nextCellState(cell, neighbors);
+            CellState newState = resolveNewState(previousIteration);
             Cell newCell = nextIteration.next();
             nextIteration.setState(newState);
             newCell.setState(newState);
@@ -62,16 +59,15 @@ public abstract class Automaton {
         return newAutomaton;
     }
 
-    public void changeCellState(Cell cell){
-        cells.put(cell.getCoordinates(), cell.getState());
+    private CellState resolveNewState(CellIterator previousIteration) {
+        Cell cell = previousIteration.next();
+        Set<CellCoordinates> neighborsCoordinates = neighborStrategy.cellNeighbors(cell.getCoordinates());
+        Set<Cell> neighbors = mapCoordinates(neighborsCoordinates);
+        return nextCellState(cell, neighbors);
     }
 
-    private Set<Cell> resolveCells(Map<CellCoordinates, CellState> cellsMap){
-        Set<Cell> cellSet = new HashSet<>();
-        for(Map.Entry<CellCoordinates, CellState> entry : cellsMap.entrySet()){
-            cellSet.add(new Cell(entry.getValue(), entry.getKey()));
-        }
-        return cellSet;
+    public void changeCellState(Cell cell){
+        cells.put(cell.getCoordinates(), cell.getState());
     }
 
     protected abstract Automaton newInstance(CellStateFactory cellStateFactory, CellNeighborhood cellNeighborhood);
