@@ -7,6 +7,8 @@ import cell.coordinates.CellCoordinates1D;
 import cell.coordinates.CellCoordinates2D;
 import cell.states.BinaryState;
 import cell.states.CellState;
+import javafx.geometry.Insets;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -91,6 +93,7 @@ public class Board {
     public Pane initBoard(){
         board = new Pane();
         board.setPrefSize(BOARD_WIDTH, BOARD_HEIGHT);
+        GridPane.setMargin(board, new Insets(15,15,10,0));
         createBoard(xCells, yCells, cellSet);
         return board;
     }
