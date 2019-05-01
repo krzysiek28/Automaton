@@ -24,11 +24,9 @@ public class GraphicUserInterface extends Application {
 
     private static int NEXT_STATE_BUTTON_WIDTH = 200;
 
-    private static int xCellCount = 5;
+    private static int xCellCount = 10;
 
-    private static int yCellCount = 5;
-
-    private Automaton automaton;
+    private static int yCellCount = 10;
 
     private GridPane mainWindow = new GridPane();
 
@@ -57,18 +55,15 @@ public class GraphicUserInterface extends Application {
         nextStateButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-//                automaton.nextState();
                 board.update();
-                System.out.println(automaton.getCells().values());
             }
         });
     }
 
     @Override
     public void start(Stage stage) {
-        automaton = createNewGameOfLife();
+        Automaton automaton = createNewGameOfLife();
         board = new Board(automaton);
-//        board = new Board(automaton.getCells());
 
         setUpLayout(board);
 

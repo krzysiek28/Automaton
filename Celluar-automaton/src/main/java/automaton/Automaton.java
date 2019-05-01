@@ -15,7 +15,7 @@ public abstract class Automaton {
 
     protected Map<CellCoordinates, CellState> cells = new HashMap<>();
 
-    private Set<Cell> cellSet;
+    private Set<Cell> cellSet = new HashSet<>();
 
     private CellNeighborhood neighborStrategy;
 
@@ -33,6 +33,7 @@ public abstract class Automaton {
             coordinates = nextCoordinates(coordinates);
             state = stateFactory.initialState(coordinates);
             cells.put(coordinates, state);
+            cellSet.add(new Cell(state, coordinates));
         }
     }
 
@@ -47,15 +48,30 @@ public abstract class Automaton {
         CellIterator previousIteration = cellIterator();
         CellIterator nextIteration = newAutomaton.cellIterator();
 
+        cellSet = new HashSet<>();
         while(previousIteration.hasNext()){
             Cell cell = previousIteration.next();
             Set<CellCoordinates> neighborsCoordinates = neighborStrategy.cellNeighbors(cell.getCoordinates());
             Set<Cell> neighbors = mapCoordinates(neighborsCoordinates);
             CellState newState = nextCellState(cell, neighbors);
-            nextIteration.next();
+            Cell newCell = nextIteration.next();
             nextIteration.setState(newState);
+            newCell.setState(newState);
+            cellSet.add(newCell);
         }
         return newAutomaton;
+    }
+
+    public void changeCellState(Cell cell){
+        cells.put(cell.getCoordinates(), cell.getState());
+    }
+
+    private Set<Cell> resolveCells(Map<CellCoordinates, CellState> cellsMap){
+        Set<Cell> cellSet = new HashSet<>();
+        for(Map.Entry<CellCoordinates, CellState> entry : cellsMap.entrySet()){
+            cellSet.add(new Cell(entry.getValue(), entry.getKey()));
+        }
+        return cellSet;
     }
 
     protected abstract Automaton newInstance(CellStateFactory cellStateFactory, CellNeighborhood cellNeighborhood);
@@ -65,7 +81,7 @@ public abstract class Automaton {
     }
 
     private Set<Cell> mapCoordinates(Set<CellCoordinates> cellCoordinates){
-        cellSet = new HashSet<>();
+        Set<Cell> cellSet = new HashSet<>();
         for(CellCoordinates coordinates : cellCoordinates){
             cellSet.add(new Cell(cells.get(coordinates), coordinates));
         }

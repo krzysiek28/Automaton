@@ -1,8 +1,6 @@
 package gui;
 
 import automaton.Automaton;
-import automaton.Automaton1Dim;
-import automaton.Automaton2Dim;
 import cell.Cell;
 import cell.coordinates.CellCoordinates;
 import cell.coordinates.CellCoordinates1D;
@@ -59,13 +57,13 @@ public class Board {
 
     private int resolveXCellCount(Set<CellCoordinates> cellCoordinates){
         if(is2DimCoordinate(cellCoordinates)){
-            return cellCoordinates.stream()
+            return 1 + cellCoordinates.stream()
                     .map(CellCoordinates2D.class::cast)
                     .map(CellCoordinates2D::getX)
                     .mapToInt(v -> v)
                     .max().orElseThrow(NoSuchElementException::new);
         } else if(is1DimCoordinate(cellCoordinates)){
-            return cellCoordinates.stream()
+            return 1+ cellCoordinates.stream()
                     .map(CellCoordinates1D.class::cast)
                     .map(CellCoordinates1D::getX)
                     .mapToInt(v -> v)
@@ -76,7 +74,7 @@ public class Board {
 
     private int resolveYCellCount(Set<CellCoordinates> cellCoordinates){
         if(is2DimCoordinate(cellCoordinates)){
-            return cellCoordinates.stream()
+            return 1 + cellCoordinates.stream()
                     .map(CellCoordinates2D.class::cast)
                     .map(CellCoordinates2D::getY)
                     .mapToInt(v -> v)
@@ -100,40 +98,35 @@ public class Board {
     public Pane initBoard(){
         board = new Pane();
         board.setPrefSize(BOARD_WIDTH, BOARD_HEIGHT);
-        createBoard(xCells, yCells);
+        createBoard(xCells, yCells, cellSet);
         return board;
     }
 
     public void changeBoardCellCount(int xCells, int yCells) {
         this.xCells = xCells;
         this.yCells = yCells;
-        createBoard(xCells, yCells);
+        createBoard(xCells, yCells, cellSet);
     }
 
-    private void createBoard(int xCells, int yCells){
+    private void createBoard(int xCells, int yCells, Set<Cell> cellSet){
         double cellWidth = BOARD_WIDTH/xCells;
         double cellHeight = BOARD_HEIGHT/yCells;
 
-//        for(Cell cell : cellSet){
-//            Tile tile = new Tile(cellWidth, cellHeight, cell);
-//            tile.setTranslateX(cellWidth * ((CellCoordinates2D)cell.getCoordinates()).getX());
-//            tile.setTranslateY(cellHeight * ((CellCoordinates2D)cell.getCoordinates()).getY());
-//            tileSet.add(tile);
-//            board.getChildren().add(tile);
-//        }
-
-        for(int x = 0; x < xCells; x++){
-            for(int y = 0; y < yCells; y++){
-                Tile tile = new Tile(cellWidth, cellHeight, new Cell(BinaryState.DEAD, new CellCoordinates2D(x, y)));
-                tile.setTranslateX(cellWidth * x);
-                tile.setTranslateY(cellHeight * y);
-                tileSet.add(tile);
-                board.getChildren().add(tile);
-            }
+        for(Cell cell : cellSet){
+            Tile tile = new Tile(cellWidth, cellHeight, cell);
+            tile.setTranslateX(cellWidth * ((CellCoordinates2D)cell.getCoordinates()).getX());
+            tile.setTranslateY(cellHeight * ((CellCoordinates2D)cell.getCoordinates()).getY());
+            tileSet.add(tile);
+            board.getChildren().add(tile);
         }
     }
 
     public void update(){
+        tileSet.forEach(tile -> automaton.changeCellState(tile.getCell()));
+        automaton.nextState();
+        tileSet = new HashSet<>();
+        cellSet = automaton.getCellSet();
+        createBoard(xCells, yCells, cellSet);
         tileSet.forEach(Tile::updateCellColor);
     }
 
@@ -163,6 +156,10 @@ public class Board {
 
         public void updateCellColor(){
             rectangle.setFill(resolveColor(cell.getState()));
+        }
+
+        public Cell getCell(){
+            return this.cell;
         }
 
         private Color resolveColor(CellState state){
