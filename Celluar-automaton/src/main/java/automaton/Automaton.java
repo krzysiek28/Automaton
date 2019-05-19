@@ -66,8 +66,8 @@ public abstract class Automaton {
         return nextCellState(cell, neighbors);
     }
 
-    public void changeCellState(Cell cell){
-        cells.put(cell.getCoordinates(), cell.getState());
+    public void changeCellState(CellCoordinates cellCoordinates, CellState cellState){
+        cells.put(cellCoordinates, cellState);
     }
 
     protected abstract Automaton newInstance(CellStateFactory cellStateFactory, CellNeighborhood cellNeighborhood);

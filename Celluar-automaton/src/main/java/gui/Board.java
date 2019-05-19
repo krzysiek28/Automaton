@@ -14,10 +14,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Set;
+import java.util.*;
 
 public class Board {
 
@@ -35,7 +32,7 @@ public class Board {
 
     private Pane board;
 
-    private Set<Tile> tileSet = new HashSet<>();
+    private Map<CellCoordinates2D, Tile> tileMap = new HashMap<>();
 
     private Set<Cell> cellSet;
 
@@ -103,61 +100,57 @@ public class Board {
         double cellHeight = BOARD_HEIGHT/yCells;
 
         for(Cell cell : cellSet){
-            Tile tile = new Tile(cellWidth, cellHeight, cell);
+            Tile tile = new Tile(cellWidth, cellHeight, cell.getState());
             tile.setTranslateX(cellWidth * ((CellCoordinates2D)cell.getCoordinates()).getX());
             tile.setTranslateY(cellHeight * ((CellCoordinates2D)cell.getCoordinates()).getY());
-            tileSet.add(tile);
+            tileMap.put((CellCoordinates2D) cell.getCoordinates(), tile);
             board.getChildren().add(tile);
         }
     }
 
     public void update(){
-        tileSet.forEach(tile -> automaton.changeCellState(tile.getCell()));
+        tileMap.entrySet().stream()
+                .forEach(entry -> automaton.changeCellState(entry.getKey(), entry.getValue().getCellState()));
         automaton.nextState();
-        tileSet = new HashSet<>();
         cellSet = automaton.getCellSet();
-        createBoard(xCells, yCells, cellSet);
-        tileSet.forEach(Tile::updateCellColor);
+        cellSet.forEach(cell -> tileMap.get(cell.getCoordinates()).updateCellColor(cell.getState()));
     }
 
     private class Tile extends StackPane {
         private Rectangle rectangle;
 
-        private Cell cell;
+        private CellState cellState;
 
-        public Tile(double cellWidth, double cellHeight, Cell cell){
-            this.cell = cell;
+        public Tile(double cellWidth, double cellHeight, CellState cellState){
+            this.cellState = cellState;
             this.rectangle = new Rectangle(cellWidth, cellHeight);
             rectangle.setStroke(Color.BLACK);
-            rectangle.setFill(resolveColor(cell.getState()));
+            rectangle.setFill(resolveColor(cellState));
             getChildren().add(rectangle);
             setOnMouseClicked(event -> changeState());
         }
 
         public void changeState() {
-            if(cell.getState() == BinaryState.ALIVE){
-                cell.setState(BinaryState.DEAD);
+            if(cellState == BinaryState.ALIVE){
+                cellState = BinaryState.DEAD;
                 rectangle.setFill(resolveColor(BinaryState.DEAD));
             } else {
-                cell.setState(BinaryState.ALIVE);
+                cellState = BinaryState.ALIVE;
                 rectangle.setFill(resolveColor(BinaryState.ALIVE));
             }
         }
 
-        public void updateCellColor(){
-            rectangle.setFill(resolveColor(cell.getState()));
+        public void updateCellColor(CellState cellState){
+            this.cellState = cellState;
+            rectangle.setFill(resolveColor(cellState));
         }
 
-        public Cell getCell(){
-            return this.cell;
+        public CellState getCellState(){
+            return this.cellState;
         }
 
         private Color resolveColor(CellState state){
             return state == BinaryState.ALIVE ? Color.BLACK : Color.WHITE;
-        }
-
-        public CellCoordinates getCellCoordinates(){
-            return cell.getCoordinates();
         }
     }
 }

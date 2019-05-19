@@ -14,7 +14,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.TitledPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import neighbor.MooreNeighborhood;
@@ -29,9 +28,9 @@ public class GraphicUserInterface extends Application {
 
     private static int NEXT_STATE_BUTTON_WIDTH = 200;
 
-    private static int xCellCount = 10;
+    private static int xCellCount = 100;
 
-    private static int yCellCount = 10;
+    private static int yCellCount = 100;
 
     private GridPane mainWindow = new GridPane();
 
@@ -84,7 +83,7 @@ public class GraphicUserInterface extends Application {
 
     private void setUpGameComboBox(){
         selectGameComboBox.getItems().add("Gra w życie");
-        selectGameComboBox.getItems().add("Automaty jednowymiarow");
+        selectGameComboBox.getItems().add("Automaty jednowymiarowe");
         selectGameComboBox.getSelectionModel().selectFirst();
         menuPane.add(selectGameComboBox, 0, 0);
     }
