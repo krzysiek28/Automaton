@@ -11,9 +11,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import neighbor.MooreNeighborhood;
@@ -28,9 +26,9 @@ public class GraphicUserInterface extends Application {
 
     private static int NEXT_STATE_BUTTON_WIDTH = 200;
 
-    private static int xCellCount = 100;
+    private static int xCellCount = 10;
 
-    private static int yCellCount = 100;
+    private static int yCellCount = 10;
 
     private GridPane mainWindow = new GridPane();
 
@@ -39,6 +37,12 @@ public class GraphicUserInterface extends Application {
     private Board board;
 
     private ComboBox selectGameComboBox = new ComboBox();
+
+    private Slider widthSlider;
+
+    private Slider heightSlider;
+
+    private ComboBox selectNeighborhoodComboBox = new ComboBox();
 
     private Button nextStateButton = new Button();
 
@@ -71,10 +75,14 @@ public class GraphicUserInterface extends Application {
         //select game x2 comboBox
         setUpGameComboBox();
         //set board size x2 sliders?
+        setUpBoardWidth();
+        setUpBoardHeight();
         //select neighborhood x1 comboBox
+        setUpNeighborhood();
         //map wrapping x1 checkbox
-        menuPane.add(mapWrappingCheckBox, 0, 3);
+        menuPane.add(mapWrappingCheckBox, 0, 6);
         //set radius x1 text -> int
+        //add to new sections new Separator();
         //set alive rules x1 text
         //set dead rules x1 text
         //set rules v3 text -> int
@@ -88,6 +96,37 @@ public class GraphicUserInterface extends Application {
         menuPane.add(selectGameComboBox, 0, 0);
     }
 
+    private void setUpBoardWidth(){
+        Label widthLabel = new Label("Szerokość:");
+        widthSlider = createAndSetUpSlider();
+        menuPane.add(widthLabel, 0, 1);
+        menuPane.add(widthSlider, 0, 2);
+    }
+
+    private void setUpBoardHeight(){
+        Label heightLabel = new Label("Wysokość:");
+        heightSlider = createAndSetUpSlider();
+        menuPane.add(heightLabel, 0, 3);
+        menuPane.add(heightSlider, 0, 4);
+    }
+
+    private Slider createAndSetUpSlider() {
+        Slider slider = new Slider();
+        slider.setMin(10);
+        slider.setMax(120);
+        slider.setValue(40);
+        slider.setShowTickLabels(true);
+        slider.setShowTickMarks(true);
+        return slider;
+    }
+
+    private void setUpNeighborhood() {
+        selectNeighborhoodComboBox.getItems().add("Moore Neighborhood");
+        selectNeighborhoodComboBox.getItems().add("Von Neuman Neighborhood");
+        selectNeighborhoodComboBox.getSelectionModel().selectFirst();
+        menuPane.add(selectNeighborhoodComboBox, 0, 5);
+    }
+
     private void addNextStateButtonListener(){
         nextStateButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -97,7 +136,6 @@ public class GraphicUserInterface extends Application {
         });
     }
 
-    @Override
     public void start(Stage stage) {
         Automaton automaton = createNewGameOfLife(xCellCount, yCellCount, mapWrappingCheckBox.isSelected(), 1, "3,2", "2");
         board = new Board(automaton);
