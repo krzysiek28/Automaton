@@ -48,6 +48,8 @@ public class GraphicUserInterface extends Application {
 
     private CheckBox mapWrappingCheckBox = new CheckBox("Zawijanie sąsiedztwa");
 
+    private Spinner<Integer> radiusSpinner = new Spinner<Integer>();
+
     public GraphicUserInterface(){
     }
 
@@ -82,10 +84,12 @@ public class GraphicUserInterface extends Application {
         //map wrapping x1 checkbox
         menuPane.add(mapWrappingCheckBox, 0, 6);
         //set radius x1 text -> int
+        setUpRadiusSpinner();
         //add to new sections new Separator();
         //set alive rules x1 text
         //set dead rules x1 text
         //set rules v3 text -> int
+        //accept rules
         mainWindow.add(menuPane, 0, 0);
     }
 
@@ -125,6 +129,16 @@ public class GraphicUserInterface extends Application {
         selectNeighborhoodComboBox.getItems().add("Von Neuman Neighborhood");
         selectNeighborhoodComboBox.getSelectionModel().selectFirst();
         menuPane.add(selectNeighborhoodComboBox, 0, 5);
+    }
+
+    private void setUpRadiusSpinner(){
+        Label radiusLabel = new Label("Promień:");
+        SpinnerValueFactory<Integer> valueFactory =
+                new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 1);
+        radiusSpinner.setValueFactory(valueFactory);
+
+        menuPane.add(radiusLabel, 0, 6);
+        menuPane.add(radiusSpinner, 0, 7);
     }
 
     private void addNextStateButtonListener(){
