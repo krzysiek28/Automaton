@@ -42,13 +42,13 @@ public class MooreNeighborhood implements CellNeighborhood {
 
     private void addCoordinateWithoutMapWrapping(Set<CellCoordinates> cellNeighborhood, CellCoordinates2D coordinates, int xCoord, int yCoord){
         if(xCoord>=0 && xCoord<width && yCoord>=0 && yCoord<height){
-            if(isTheSameCoordinate(coordinates, xCoord, yCoord)){
+            if(isNotTheSameCoordinate(coordinates, xCoord, yCoord)){
                 cellNeighborhood.add(new CellCoordinates2D(xCoord,yCoord));
             }
         }
     }
 
-    private void addCoordinateWithMapWrapping(Set<CellCoordinates> cellNeighborhood, CellCoordinates2D coordinates, int yCoord, int xCoord) {
+    private void addCoordinateWithMapWrapping(Set<CellCoordinates> cellNeighborhood, CellCoordinates2D coordinates, int xCoord, int yCoord) {
         int newXCoordinate = xCoord;
         int newYCoordinate = yCoord;
         if(xCoord<0)
@@ -59,11 +59,11 @@ public class MooreNeighborhood implements CellNeighborhood {
             newYCoordinate = yCoord+height;
         if(yCoord>=height)
             newYCoordinate = yCoord-height;
-        if(isTheSameCoordinate(coordinates, newXCoordinate, newYCoordinate))
-            cellNeighborhood.add(new CellCoordinates2D(newXCoordinate,newYCoordinate));
+        if(isNotTheSameCoordinate(coordinates, newXCoordinate, newYCoordinate))
+            cellNeighborhood.add(new CellCoordinates2D(newXCoordinate, newYCoordinate));
     }
 
-    private boolean isTheSameCoordinate(CellCoordinates2D coordinates, int xCoordinate, int yCoordinate) {
+    private boolean isNotTheSameCoordinate(CellCoordinates2D coordinates, int xCoordinate, int yCoordinate) {
         return xCoordinate != coordinates.getX() || yCoordinate != coordinates.getY();
     }
 }

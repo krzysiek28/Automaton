@@ -30,14 +30,14 @@ public class VonNeumanNeighborhood implements CellNeighborhood {
 
 
         int count = 0;
-        for(int xCoord = coordinates.getX()-radius; xCoord < coordinates.getX(); xCoord++, count++){
-            for(int yCoord = coordinates.getY()-count; yCoord <= coordinates.getY()+count; yCoord++){
+        for(int xCoord = coordinates.getX() - radius; xCoord < coordinates.getX(); xCoord++, count++){
+            for(int yCoord = coordinates.getY() - count; yCoord <= coordinates.getY()+count; yCoord++){
                 addCoordinate(cellNeighs, coordinates, xCoord, yCoord);
             }
         }
         count = radius;
         for(int xCoord = coordinates.getX(); xCoord <= coordinates.getX()+radius; xCoord++, count--){
-            for(int yCoord = coordinates.getY()-count; yCoord <= coordinates.getY()+count; yCoord++){
+            for(int yCoord = coordinates.getY() - count; yCoord <= coordinates.getY()+count; yCoord++){
                 addCoordinate(cellNeighs, coordinates, xCoord, yCoord);
             }
         }
@@ -54,7 +54,7 @@ public class VonNeumanNeighborhood implements CellNeighborhood {
 
     private void addCoordinateWithoutMapWrapping(Set<CellCoordinates> cellNeighs, CellCoordinates2D coordinates, int xCoord, int yCoord) {
         if (xCoord >= 0 && xCoord < width && yCoord >= 0 && yCoord < height) {
-            if (isTheSameCoordinate(coordinates, xCoord, yCoord)) {
+            if (isNotTheSameCoordinate(coordinates, xCoord, yCoord)) {
                 cellNeighs.add(new CellCoordinates2D(xCoord, yCoord));
             }
         }
@@ -71,11 +71,11 @@ public class VonNeumanNeighborhood implements CellNeighborhood {
             newYCoordinate = yCoord + height;
         if (yCoord >= height)
             newYCoordinate = yCoord - height;
-        if (isTheSameCoordinate(coordinates, newXCoordinate, newYCoordinate))
+        if (isNotTheSameCoordinate(coordinates, newXCoordinate, newYCoordinate))
             cellNeighs.add(new CellCoordinates2D(newXCoordinate, newYCoordinate));
     }
 
-    private boolean isTheSameCoordinate(CellCoordinates2D coordinates, int newXCoordinate, int newYCoordinate) {
+    private boolean isNotTheSameCoordinate(CellCoordinates2D coordinates, int newXCoordinate, int newYCoordinate) {
         return newXCoordinate != coordinates.getX() || newYCoordinate != coordinates.getY();
     }
 }

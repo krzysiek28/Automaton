@@ -7,6 +7,8 @@ import game.GameOfLife;
 import game.GameOfLifeHelper;
 import game.Rule256;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -64,6 +66,8 @@ public class GraphicUserInterface extends Application {
 
     private Button settingAcceptButton = new Button();
 
+    private Button cleanBoardButton = new Button();
+
     public GraphicUserInterface(){
     }
 
@@ -72,7 +76,7 @@ public class GraphicUserInterface extends Application {
         GridPane.setMargin(mainWindow, new Insets(10,10,10,10));
         setUpNextStateButton();
         setUpMenuPane();
-        mainWindow.add(board.initBoard(), 1,0);
+        mainWindow.add(board.getBoardPane(), 1,0);
     }
 
     private void setUpNextStateButton(){
@@ -88,25 +92,15 @@ public class GraphicUserInterface extends Application {
         menuPane.setAlignment(Pos.TOP_CENTER);
 //        menuPane.setGridLinesVisible(true);
         menuPane.setVgap(10);
-        //select game x2 comboBox
         setUpGameComboBox();
-        //set board size x2 sliders?
         setUpBoardWidth();
         setUpBoardHeight();
-        //select neighborhood x1 comboBox
         setUpNeighborhood();
-        //map wrapping x1 checkbox
         menuPane.add(mapWrappingCheckBox, 0, 6);
-        //set radius x1 text -> int
         setUpRadiusSpinner();
-        //add to new sections new Separator();
-        //set alive rules x1 text
         setUpAliveRulesTextField();
-        //set dead rules x1 text
         setUpDeadRulesTextField();
-        //set rules v3 text -> int
         setUpAutomaton1DRulesSpinner();
-        //accept rules
         setUpSettingAcceptButton();
         mainWindow.add(menuPane, 0, 0);
     }
@@ -115,6 +109,7 @@ public class GraphicUserInterface extends Application {
         selectGameComboBox.getItems().add(GAME_OF_LIFE);
         selectGameComboBox.getItems().add(AUTOMATON_1D);
         selectGameComboBox.getSelectionModel().selectFirst();
+        addSelectGameComboBoxListener();
         menuPane.add(selectGameComboBox, 0, 0);
     }
 
@@ -178,7 +173,7 @@ public class GraphicUserInterface extends Application {
         SpinnerValueFactory<Integer> valueFactory =
                 new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 255, 128);
         automaton1DRulesSpinner.setValueFactory(valueFactory);
-
+        automaton1DRulesSpinner.setVisible(false);
         menuPane.add(automaton1DRulesLabel, 0, 13);
         menuPane.add(automaton1DRulesSpinner, 0, 14);
     }
@@ -190,6 +185,37 @@ public class GraphicUserInterface extends Application {
         menuPane.add(settingAcceptButton, 0, 15);
     }
 
+    private void addSelectGameComboBoxListener(){
+        selectGameComboBox.valueProperty().addListener(new ChangeListener<String>() {
+            @Override public void changed(ObservableValue observableValue, String oldValue, String currentValue) {
+                switch (currentValue){
+                    case GAME_OF_LIFE:
+                        widthSlider.setVisible(true);
+                        heightSlider.setVisible(true);
+                        selectNeighborhoodComboBox.setVisible(true);
+                        mapWrappingCheckBox.setVisible(true);
+                        radiusSpinner.setVisible(true);
+                        aliveRulesTextField.setVisible(true);
+                        deadRulesTextField.setVisible(true);
+                        automaton1DRulesSpinner.setVisible(false);
+                        break;
+                    case AUTOMATON_1D:
+                        widthSlider.setVisible(true);
+                        heightSlider.setVisible(false);
+                        selectNeighborhoodComboBox.setVisible(false);
+                        mapWrappingCheckBox.setVisible(false);
+                        radiusSpinner.setVisible(false);
+                        aliveRulesTextField.setVisible(false);
+                        deadRulesTextField.setVisible(false);
+                        automaton1DRulesSpinner.setVisible(true);
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+        });
+    }
 
     private void addNextStateButtonListener(){
         nextStateButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -204,19 +230,22 @@ public class GraphicUserInterface extends Application {
         settingAcceptButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                switch (selectGameComboBox.getSelectionModel().getSelectedItem().toString()){
+                final String selectedValue = selectGameComboBox.getSelectionModel().getSelectedItem().toString();
+                switch (selectedValue){
                     case GAME_OF_LIFE:
                         Automaton gameOfLife = createNewGameOfLife((int)widthSlider.getValue(), (int)heightSlider.getValue(),
                                 mapWrappingCheckBox.isSelected(), radiusSpinner.getValue(),
                                 aliveRulesTextField.getText(), deadRulesTextField.getText());
                         board = new Board(gameOfLife);
-                        mainWindow.add(board.initBoard(), 1,0);
+                        mainWindow.add(board.getBoardPane(), 1,0);
+                        break;
                     case AUTOMATON_1D:
                         Automaton automaton1D = new Rule256(new UniformStateFactory(BinaryState.DEAD),
                                 new Neighborhood1D((int)widthSlider.getValue()), (int)widthSlider.getValue(),
                                 automaton1DRulesSpinner.getValue());
                         board = new Board(automaton1D);
-                        mainWindow.add(board.initBoard(), 1,0);
+                        mainWindow.add(board.getBoardPane(), 1,0);
+                        break;
                     default:
                         break;
                 }
@@ -239,9 +268,9 @@ public class GraphicUserInterface extends Application {
          String aliveRules, String deadRules){
         return new GameOfLife(
             new UniformStateFactory(BinaryState.DEAD),
-            new MooreNeighborhood(1, false, xCellCount, yCellCount),
+            new MooreNeighborhood(radius, mapWrapping, xCellCount, yCellCount),
             xCellCount, yCellCount,
-            GameOfLifeHelper.convertStringToCellRulesList("3,2"),
-            GameOfLifeHelper.convertStringToCellRulesList("2"));
+            GameOfLifeHelper.convertStringToCellRulesList(aliveRules),
+            GameOfLifeHelper.convertStringToCellRulesList(deadRules));
     }
 }

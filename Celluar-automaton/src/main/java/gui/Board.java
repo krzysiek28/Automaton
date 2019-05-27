@@ -18,9 +18,9 @@ import java.util.*;
 
 public class Board {
 
-    private final static int BOARD_HEIGHT = 550;
+    private final static double BOARD_HEIGHT = 550;
 
-    private final static int BOARD_WIDTH = 1000;
+    private final static double BOARD_WIDTH = 1000;
 
     private final static int DEFAULT_Y_CELL_COUNT = 50;
 
@@ -45,6 +45,10 @@ public class Board {
         this.xCells = resolveXCellCount(cells.keySet());
         this.yCells = resolveYCellCount(cells.keySet());
         initBoard();
+    }
+
+    public Pane getBoardPane(){
+        return this.board;
     }
 
     private int resolveXCellCount(Set<CellCoordinates> cellCoordinates){
