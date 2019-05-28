@@ -13,13 +13,16 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import neighbor.CellNeighborhood;
 import neighbor.MooreNeighborhood;
 import neighbor.Neighborhood1D;
+import neighbor.VonNeumanNeighborhood;
 
 public class GraphicUserInterface extends Application {
 
@@ -31,13 +34,17 @@ public class GraphicUserInterface extends Application {
 
     private static final int BUTTON_WIDTH = 200;
 
-    private static int xCellCount = 10;
-
-    private static int yCellCount = 10;
-
     private static final String GAME_OF_LIFE = "Gra w życie";
 
     private static final String AUTOMATON_1D = "Automaty jednowymiarowe";
+
+    private static final String MOORE_NEIGHBORHOOD = "Moore Neighborhood";
+
+    private static final String VON_NEUMAN_NEIGHBORHOOD = "Von Neuman Neighborhood";
+
+    private static int xCellCount = 10;
+
+    private static int yCellCount = 10;
 
     private GridPane mainWindow = new GridPane();
 
@@ -46,6 +53,18 @@ public class GraphicUserInterface extends Application {
     private Board board;
 
     private ComboBox selectGameComboBox = new ComboBox();
+
+    private VBox boardWidthVBox = new VBox();
+
+    private VBox boardHeightVBox = new VBox();
+
+    private VBox radiusVBox = new VBox();
+
+    private VBox aliveRulesVBox = new VBox();
+
+    private VBox deadRulesVBox = new VBox();
+
+    private VBox automaton1DRulesVBox = new VBox();
 
     private Slider widthSlider;
 
@@ -69,6 +88,8 @@ public class GraphicUserInterface extends Application {
 
     private Button clearBoardButton = new Button();
 
+    private HBox bottomPanelHBox = new HBox();
+
     public GraphicUserInterface(){
     }
 
@@ -77,6 +98,7 @@ public class GraphicUserInterface extends Application {
         GridPane.setMargin(mainWindow, new Insets(10,10,10,10));
         setUpNextStateButton();
         setUpMenuPane();
+        mainWindow.add(bottomPanelHBox, 1, 1);
         mainWindow.add(board.getBoardPane(), 1,0);
     }
 
@@ -84,7 +106,8 @@ public class GraphicUserInterface extends Application {
         nextStateButton.setText("Nowy stan");
         nextStateButton.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         addNextStateButtonListener();
-        mainWindow.add(nextStateButton, 1, 1);
+        bottomPanelHBox.getChildren().add(nextStateButton);
+//        mainWindow.add(nextStateButton, 1, 1);
     }
 
     private void setUpMenuPane(){
@@ -97,7 +120,7 @@ public class GraphicUserInterface extends Application {
         setUpBoardWidth();
         setUpBoardHeight();
         setUpNeighborhood();
-        menuPane.add(mapWrappingCheckBox, 0, 6);
+        menuPane.add(mapWrappingCheckBox, 0, 4);
         setUpRadiusSpinner();
         setUpAliveRulesTextField();
         setUpDeadRulesTextField();
@@ -118,15 +141,15 @@ public class GraphicUserInterface extends Application {
     private void setUpBoardWidth(){
         Label widthLabel = new Label("Szerokość:");
         widthSlider = createAndSetUpSlider();
-        menuPane.add(widthLabel, 0, 1);
-        menuPane.add(widthSlider, 0, 2);
+        boardWidthVBox.getChildren().addAll(widthLabel, widthSlider);
+        menuPane.add(boardWidthVBox, 0, 1);
     }
 
     private void setUpBoardHeight(){
         Label heightLabel = new Label("Wysokość:");
         heightSlider = createAndSetUpSlider();
-        menuPane.add(heightLabel, 0, 3);
-        menuPane.add(heightSlider, 0, 4);
+        boardHeightVBox.getChildren().addAll(heightLabel, heightSlider);
+        menuPane.add(boardHeightVBox, 0, 2);
     }
 
     private Slider createAndSetUpSlider() {
@@ -140,10 +163,10 @@ public class GraphicUserInterface extends Application {
     }
 
     private void setUpNeighborhood() {
-        selectNeighborhoodComboBox.getItems().add("Moore Neighborhood");
-        selectNeighborhoodComboBox.getItems().add("Von Neuman Neighborhood");
+        selectNeighborhoodComboBox.getItems().add(MOORE_NEIGHBORHOOD);
+        selectNeighborhoodComboBox.getItems().add(VON_NEUMAN_NEIGHBORHOOD);
         selectNeighborhoodComboBox.getSelectionModel().selectFirst();
-        menuPane.add(selectNeighborhoodComboBox, 0, 5);
+        menuPane.add(selectNeighborhoodComboBox, 0, 3);
     }
 
     private void setUpRadiusSpinner(){
@@ -151,23 +174,22 @@ public class GraphicUserInterface extends Application {
         SpinnerValueFactory<Integer> valueFactory =
                 new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 10, 1);
         radiusSpinner.setValueFactory(valueFactory);
-
-        menuPane.add(radiusLabel, 0, 7);
-        menuPane.add(radiusSpinner, 0, 8);
+        radiusVBox.getChildren().addAll(radiusLabel, radiusSpinner);
+        menuPane.add(radiusVBox, 0, 5);
     }
 
     private void setUpAliveRulesTextField(){
         Label aliveRulesLabel = new Label("Zasady przeżywania komórki:");
         aliveRulesTextField.setText("2,3");
-        menuPane.add(aliveRulesLabel, 0, 9);
-        menuPane.add(aliveRulesTextField, 0, 10);
+        aliveRulesVBox.getChildren().addAll(aliveRulesLabel, aliveRulesTextField);
+        menuPane.add(aliveRulesVBox, 0, 6);
     }
 
     private void setUpDeadRulesTextField(){
         Label deadRulesLabel = new Label("Zasady ożywiania komórki:");
         deadRulesTextField.setText("3");
-        menuPane.add(deadRulesLabel, 0, 11);
-        menuPane.add(deadRulesTextField, 0, 12);
+        deadRulesVBox.getChildren().addAll(deadRulesLabel, deadRulesTextField);
+        menuPane.add(deadRulesVBox, 0, 7);
     }
 
     private void setUpAutomaton1DRulesSpinner(){
@@ -175,23 +197,24 @@ public class GraphicUserInterface extends Application {
         SpinnerValueFactory<Integer> valueFactory =
                 new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 255, 128);
         automaton1DRulesSpinner.setValueFactory(valueFactory);
-        automaton1DRulesSpinner.setVisible(false);
-        menuPane.add(automaton1DRulesLabel, 0, 13);
-        menuPane.add(automaton1DRulesSpinner, 0, 14);
+        automaton1DRulesVBox.getChildren().addAll(automaton1DRulesLabel, automaton1DRulesSpinner);
+        automaton1DRulesVBox.setVisible(false);
+        menuPane.add(automaton1DRulesVBox, 0, 2);
     }
 
     private void setUpSettingAcceptButton() {
         settingAcceptButton.setText("Akceptuj ustawienia");
         settingAcceptButton.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         addSettingAcceptButtonListener();
-        menuPane.add(settingAcceptButton, 0, 15);
+        menuPane.add(settingAcceptButton, 0, 9);
     }
 
     private void setUpClearBoardButton() {
         clearBoardButton.setText("Wyczyść planszę");
         clearBoardButton.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         addClearBoardButtonListener();
-        menuPane.add(clearBoardButton, 0, 16);
+        bottomPanelHBox.getChildren().add(clearBoardButton);
+//        menuPane.add(clearBoardButton, 0, 10);
     }
 
     private void addSelectGameComboBoxListener(){
@@ -199,24 +222,24 @@ public class GraphicUserInterface extends Application {
             @Override public void changed(ObservableValue observableValue, String oldValue, String currentValue) {
                 switch (currentValue){
                     case GAME_OF_LIFE:
-                        widthSlider.setVisible(true);
-                        heightSlider.setVisible(true);
+                        boardWidthVBox.setVisible(true);
+                        boardHeightVBox.setVisible(true);
                         selectNeighborhoodComboBox.setVisible(true);
                         mapWrappingCheckBox.setVisible(true);
-                        radiusSpinner.setVisible(true);
-                        aliveRulesTextField.setVisible(true);
-                        deadRulesTextField.setVisible(true);
-                        automaton1DRulesSpinner.setVisible(false);
+                        radiusVBox.setVisible(true);
+                        aliveRulesVBox.setVisible(true);
+                        deadRulesVBox.setVisible(true);
+                        automaton1DRulesVBox.setVisible(false);
                         break;
                     case AUTOMATON_1D:
-                        widthSlider.setVisible(true);
-                        heightSlider.setVisible(false);
+                        boardWidthVBox.setVisible(true);
+                        boardHeightVBox.setVisible(false);
                         selectNeighborhoodComboBox.setVisible(false);
                         mapWrappingCheckBox.setVisible(false);
-                        radiusSpinner.setVisible(false);
-                        aliveRulesTextField.setVisible(false);
-                        deadRulesTextField.setVisible(false);
-                        automaton1DRulesSpinner.setVisible(true);
+                        radiusVBox.setVisible(false);
+                        aliveRulesVBox.setVisible(false);
+                        deadRulesVBox.setVisible(false);
+                        automaton1DRulesVBox.setVisible(true);
                         break;
                     default:
                         break;
@@ -272,7 +295,11 @@ public class GraphicUserInterface extends Application {
     }
 
     public void start(Stage stage) {
-        Automaton automaton = createNewGameOfLife(xCellCount, yCellCount, mapWrappingCheckBox.isSelected(), 1, "3,2", "3");
+        Automaton automaton = new GameOfLife(
+                new UniformStateFactory(BinaryState.DEAD),
+                new MooreNeighborhood(1, false, xCellCount, yCellCount), xCellCount, yCellCount,
+                GameOfLifeHelper.convertStringToCellRulesList("3,2"),
+                GameOfLifeHelper.convertStringToCellRulesList("3"));
         board = new Board(automaton);
 
         setUpLayout(board);
@@ -284,11 +311,23 @@ public class GraphicUserInterface extends Application {
 
     public Automaton createNewGameOfLife(int xCellCount, int yCellCount, boolean mapWrapping, int radius,
          String aliveRules, String deadRules){
+        CellNeighborhood neighborhood = resolveNeighborhood2D(xCellCount, yCellCount, mapWrapping, radius);
         return new GameOfLife(
             new UniformStateFactory(BinaryState.DEAD),
-            new MooreNeighborhood(radius, mapWrapping, xCellCount, yCellCount),
-            xCellCount, yCellCount,
+            neighborhood, xCellCount, yCellCount,
             GameOfLifeHelper.convertStringToCellRulesList(aliveRules),
             GameOfLifeHelper.convertStringToCellRulesList(deadRules));
+    }
+
+    private CellNeighborhood resolveNeighborhood2D(int xCellCount, int yCellCount, boolean mapWrapping, int radius) {
+        final String selectedValue = selectNeighborhoodComboBox.getSelectionModel().getSelectedItem().toString();
+        switch (selectedValue){
+            case MOORE_NEIGHBORHOOD:
+                return new MooreNeighborhood(radius, mapWrapping, xCellCount, yCellCount);
+            case VON_NEUMAN_NEIGHBORHOOD:
+                return new VonNeumanNeighborhood(radius, mapWrapping, xCellCount, yCellCount);
+            default:
+                throw new IllegalArgumentException("Cannot resolve neighborhood, selected token: " + selectedValue);
+        }
     }
 }
