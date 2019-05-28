@@ -33,7 +33,7 @@ public class GameOfLifeTest {
 
     private static final String ALIVE_RULES = "3,2";
 
-    private static final String DEAD_RULES = "2";
+    private static final String DEAD_RULES = "3";
 
     Automaton automaton;
 
@@ -52,12 +52,9 @@ public class GameOfLifeTest {
 
         NEXT_STATE_CELL_MAP = new HashMap<>();
         NEXT_STATE_CELL_MAP.put(new CellCoordinates2D(1,3), BinaryState.ALIVE);
-        NEXT_STATE_CELL_MAP.put(new CellCoordinates2D(1,2), BinaryState.ALIVE);
-        NEXT_STATE_CELL_MAP.put(new CellCoordinates2D(1,4), BinaryState.ALIVE);
-        NEXT_STATE_CELL_MAP.put(new CellCoordinates2D(5,7), BinaryState.ALIVE);
-        NEXT_STATE_CELL_MAP.put(new CellCoordinates2D(6,6), BinaryState.ALIVE);
-        NEXT_STATE_CELL_MAP.put(new CellCoordinates2D(6,8), BinaryState.ALIVE);
-        NEXT_STATE_CELL_MAP.put(new CellCoordinates2D(7,7), BinaryState.ALIVE);
+        NEXT_STATE_CELL_MAP.put(new CellCoordinates2D(2,3), BinaryState.ALIVE);
+        NEXT_STATE_CELL_MAP.put(new CellCoordinates2D(3,3), BinaryState.ALIVE);
+        NEXT_STATE_CELL_MAP.put(new CellCoordinates2D(6,7), BinaryState.ALIVE);
     }
 
     @Before
@@ -77,6 +74,7 @@ public class GameOfLifeTest {
         Set<Cell> aliveCells = automaton.getCellSet().stream()
                 .filter(cell -> cell.getState().equals(BinaryState.ALIVE))
                 .collect(Collectors.toSet());
+
         Map<CellCoordinates2D, CellState> resultMap = aliveCells.stream()
                 .collect(HashMap<CellCoordinates2D, CellState>::new,
                         (m, c) -> m.put((CellCoordinates2D) c.getCoordinates(), c.getState()),

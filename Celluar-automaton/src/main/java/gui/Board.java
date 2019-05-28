@@ -120,6 +120,12 @@ public class Board {
         cellSet.forEach(cell -> tileMap.get(cell.getCoordinates()).updateCellColor(cell.getState()));
     }
 
+    public void clear(){
+        tileMap.entrySet().stream()
+                .forEach(entry -> automaton.changeCellState(entry.getKey(), BinaryState.DEAD));
+        cellSet.forEach(cell -> tileMap.get(cell.getCoordinates()).updateCellColor(BinaryState.DEAD));
+    }
+
     private class Tile extends StackPane {
         private Rectangle rectangle;
 

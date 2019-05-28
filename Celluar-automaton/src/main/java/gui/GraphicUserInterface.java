@@ -13,6 +13,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
@@ -26,9 +27,9 @@ public class GraphicUserInterface extends Application {
 
     private static final int MAIN_APP_WIDTH = 1350;
 
-    private static final int NEXT_STATE_BUTTON_HEIGHT = 50;
+    private static final int BUTTON_HEIGHT = 50;
 
-    private static final int NEXT_STATE_BUTTON_WIDTH = 200;
+    private static final int BUTTON_WIDTH = 200;
 
     private static int xCellCount = 10;
 
@@ -66,7 +67,7 @@ public class GraphicUserInterface extends Application {
 
     private Button settingAcceptButton = new Button();
 
-    private Button cleanBoardButton = new Button();
+    private Button clearBoardButton = new Button();
 
     public GraphicUserInterface(){
     }
@@ -81,7 +82,7 @@ public class GraphicUserInterface extends Application {
 
     private void setUpNextStateButton(){
         nextStateButton.setText("Nowy stan");
-        nextStateButton.setPrefSize(NEXT_STATE_BUTTON_WIDTH, NEXT_STATE_BUTTON_HEIGHT);
+        nextStateButton.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         addNextStateButtonListener();
         mainWindow.add(nextStateButton, 1, 1);
     }
@@ -102,6 +103,7 @@ public class GraphicUserInterface extends Application {
         setUpDeadRulesTextField();
         setUpAutomaton1DRulesSpinner();
         setUpSettingAcceptButton();
+        setUpClearBoardButton();
         mainWindow.add(menuPane, 0, 0);
     }
 
@@ -162,7 +164,7 @@ public class GraphicUserInterface extends Application {
     }
 
     private void setUpDeadRulesTextField(){
-        Label deadRulesLabel = new Label("Zasady umierania komórki:");
+        Label deadRulesLabel = new Label("Zasady ożywiania komórki:");
         deadRulesTextField.setText("3");
         menuPane.add(deadRulesLabel, 0, 11);
         menuPane.add(deadRulesTextField, 0, 12);
@@ -180,9 +182,16 @@ public class GraphicUserInterface extends Application {
 
     private void setUpSettingAcceptButton() {
         settingAcceptButton.setText("Akceptuj ustawienia");
-        settingAcceptButton.setPrefSize(NEXT_STATE_BUTTON_WIDTH, NEXT_STATE_BUTTON_HEIGHT);
+        settingAcceptButton.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
         addSettingAcceptButtonListener();
         menuPane.add(settingAcceptButton, 0, 15);
+    }
+
+    private void setUpClearBoardButton() {
+        clearBoardButton.setText("Wyczyść planszę");
+        clearBoardButton.setPrefSize(BUTTON_WIDTH, BUTTON_HEIGHT);
+        addClearBoardButtonListener();
+        menuPane.add(clearBoardButton, 0, 16);
     }
 
     private void addSelectGameComboBoxListener(){
@@ -253,8 +262,17 @@ public class GraphicUserInterface extends Application {
         });
     }
 
+    private void addClearBoardButtonListener(){
+        clearBoardButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                board.clear();
+            }
+        });
+    }
+
     public void start(Stage stage) {
-        Automaton automaton = createNewGameOfLife(xCellCount, yCellCount, mapWrappingCheckBox.isSelected(), 1, "3,2", "2");
+        Automaton automaton = createNewGameOfLife(xCellCount, yCellCount, mapWrappingCheckBox.isSelected(), 1, "3,2", "3");
         board = new Board(automaton);
 
         setUpLayout(board);
