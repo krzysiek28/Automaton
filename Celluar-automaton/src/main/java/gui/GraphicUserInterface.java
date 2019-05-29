@@ -88,6 +88,8 @@ public class GraphicUserInterface extends Application {
 
     private Button clearBoardButton = new Button();
 
+    private HBox structurePanelHBox = new HBox();
+
     private HBox bottomPanelHBox = new HBox();
 
     public GraphicUserInterface(){
@@ -98,7 +100,9 @@ public class GraphicUserInterface extends Application {
         GridPane.setMargin(mainWindow, new Insets(10,10,10,10));
         setUpNextStateButton();
         setUpMenuPane();
-        mainWindow.add(bottomPanelHBox, 1, 1);
+        mainWindow.add(structurePanelHBox,1,1);
+        setUpStructurePanel();
+        mainWindow.add(bottomPanelHBox, 1, 2);
         mainWindow.add(board.getBoardPane(), 1,0);
     }
 
@@ -215,6 +219,22 @@ public class GraphicUserInterface extends Application {
         addClearBoardButtonListener();
         bottomPanelHBox.getChildren().add(clearBoardButton);
 //        menuPane.add(clearBoardButton, 0, 10);
+    }
+
+    private void setUpStructurePanel(){
+        Button addBlockButton = new Button();
+        addBlockButton.setText("Klocek");
+        addBlockButtonListener(addBlockButton);
+        structurePanelHBox.getChildren().add(addBlockButton);
+    }
+
+    private void addBlockButtonListener(Button addBlockButton) {
+        addBlockButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                board.addStructure(1);
+            }
+        });
     }
 
     private void addSelectGameComboBoxListener(){

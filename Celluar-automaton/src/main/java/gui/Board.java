@@ -38,6 +38,10 @@ public class Board {
 
     private Automaton automaton;
 
+    private boolean addStructureState = false;
+
+    private int structureKind;
+
     public Board(Automaton automaton){
         this.automaton = automaton;
         this.cellSet = automaton.getCellSet();
@@ -126,7 +130,25 @@ public class Board {
         cellSet.forEach(cell -> tileMap.get(cell.getCoordinates()).updateCellColor(BinaryState.DEAD));
     }
 
+    public void addStructure(int structure){
+        addStructureState = true;
+        this.structureKind = structure;
+    }
+
+    private void addStructureCells(Tile tile){
+        CellCoordinates2D coords  = tileMap.entrySet().stream()
+                .filter(entry -> entry.getValue().equals(tile))
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .get();
+        Map<CellCoordinates2D, CellState> structureMap = StructureHelper.putGun(coords, xCells, yCells);
+        for (Map.Entry<CellCoordinates2D, CellState> entry : structureMap.entrySet()){
+            tileMap.get(entry.getKey()).updateCellColor(entry.getValue());
+        }
+    }
+
     private class Tile extends StackPane {
+
         private Rectangle rectangle;
 
         private CellState cellState;
@@ -141,7 +163,10 @@ public class Board {
         }
 
         public void changeState() {
-            if(cellState == BinaryState.ALIVE){
+            if(addStructureState){
+                addStructureCells(this);
+                addStructureState = false;
+            } else if(cellState == BinaryState.ALIVE){
                 cellState = BinaryState.DEAD;
                 rectangle.setFill(resolveColor(BinaryState.DEAD));
             } else {
