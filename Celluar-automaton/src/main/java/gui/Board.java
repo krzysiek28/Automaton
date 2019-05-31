@@ -40,7 +40,7 @@ public class Board {
 
     private boolean addStructureState = false;
 
-    private int structureKind;
+    private Structures structureKind;
 
     public Board(Automaton automaton){
         this.automaton = automaton;
@@ -130,7 +130,7 @@ public class Board {
         cellSet.forEach(cell -> tileMap.get(cell.getCoordinates()).updateCellColor(BinaryState.DEAD));
     }
 
-    public void addStructure(int structure){
+    public void addStructure(Structures structure){
         addStructureState = true;
         this.structureKind = structure;
     }
@@ -141,7 +141,26 @@ public class Board {
                 .map(Map.Entry::getKey)
                 .findFirst()
                 .get();
-        Map<CellCoordinates2D, CellState> structureMap = StructureHelper.putGun(coords, xCells, yCells);
+        Map<CellCoordinates2D, CellState> structureMap
+
+
+
+                = StructureHelper.putGun(coords, xCells, yCells);
+        switch (this.structureKind){
+            case BLOCK:
+                structureMap = StructureHelper.putBlock(coords, xCells, yCells);
+                break;
+            case KITE:
+                structureMap = StructureHelper.putKite(coords, xCells, yCells);
+                break;
+            case BOAT:
+                structureMap = StructureHelper.putBoat(coords, xCells, yCells);
+                break;
+            case GUN:
+                structureMap = StructureHelper.putGun(coords, xCells, yCells);
+                break;
+        }
+
         for (Map.Entry<CellCoordinates2D, CellState> entry : structureMap.entrySet()){
             tileMap.get(entry.getKey()).updateCellColor(entry.getValue());
         }

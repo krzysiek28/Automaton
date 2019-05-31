@@ -17,7 +17,7 @@ public final class StructureHelper {
         return parseAndCreateMapEntries(String.format("(%d,%d);(%d,%d);(%d,%d);(%d,%d)", x, y, x+1, y+1, x,y+1, x+1, y), width, height);
     }
 
-    public static Map<CellCoordinates2D, CellState> getBoat(CellCoordinates2D coordinates, int width, int height){
+    public static Map<CellCoordinates2D, CellState> putBoat(CellCoordinates2D coordinates, int width, int height){
         int x = coordinates.getX();
         int y = coordinates.getY();
         return parseAndCreateMapEntries(String.format("(%d,%d);(%d,%d);(%d,%d);(%d,%d);(%d,%d)", x, y, x+1, y, x, y+1, x+2, y+1, x+1, y+2), width, height);
@@ -26,7 +26,7 @@ public final class StructureHelper {
     public static Map<CellCoordinates2D, CellState> putKite(CellCoordinates2D coordinates, int width, int height) {
         int x = coordinates.getX();
         int y = coordinates.getY();
-        return parseAndCreateMapEntries(String.format("(%d,%d);(%d,%d);(%d,%d);(%d,%d);(%d,%d)", x, y, x+1, y, x, y+1, x+2, y, x, y+1, x+1, y+2), width, height);
+        return parseAndCreateMapEntries(String.format("(%d,%d);(%d,%d);(%d,%d);(%d,%d);(%d,%d)", x, y, x+1, y, x, y+1, x+2, y, x+1, y+2), width, height);
     }
 
     public static Map<CellCoordinates2D, CellState> putGun(CellCoordinates2D coordinates, int width, int height) {

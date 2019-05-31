@@ -222,17 +222,72 @@ public class GraphicUserInterface extends Application {
     }
 
     private void setUpStructurePanel(){
+        addBlockButton();
+        addKiteButton();
+        addBoatButton();
+        addGunButton();
+    }
+
+    private void addBlockButton(){
         Button addBlockButton = new Button();
         addBlockButton.setText("Klocek");
         addBlockButtonListener(addBlockButton);
         structurePanelHBox.getChildren().add(addBlockButton);
     }
 
+    private void addKiteButton(){
+        Button addKiteButton = new Button();
+        addKiteButton.setText("Latawiec");
+        addKiteButtonListener(addKiteButton);
+        structurePanelHBox.getChildren().add(addKiteButton);
+    }
+
+    private void addBoatButton(){
+        Button addBoatButton = new Button();
+        addBoatButton.setText("Łódź");
+        addBoatButtonListener(addBoatButton);
+        structurePanelHBox.getChildren().add(addBoatButton);
+    }
+
+    private void addGunButton(){
+        Button addGunButton = new Button();
+        addGunButton.setText("Działo");
+        addGunButtonListener(addGunButton);
+        structurePanelHBox.getChildren().add(addGunButton);
+    }
+
     private void addBlockButtonListener(Button addBlockButton) {
         addBlockButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                board.addStructure(1);
+                board.addStructure(Structures.BLOCK);
+            }
+        });
+    }
+
+    private void addKiteButtonListener(Button addKiteButton) {
+        addKiteButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                board.addStructure(Structures.KITE);
+            }
+        });
+    }
+
+    private void addBoatButtonListener(Button addBoatButton) {
+        addBoatButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                board.addStructure(Structures.BOAT);
+            }
+        });
+    }
+
+    private void addGunButtonListener(Button addGunButton) {
+        addGunButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                board.addStructure(Structures.GUN);
             }
         });
     }
@@ -242,6 +297,7 @@ public class GraphicUserInterface extends Application {
             @Override public void changed(ObservableValue observableValue, String oldValue, String currentValue) {
                 switch (currentValue){
                     case GAME_OF_LIFE:
+                        settingAcceptButton.setDisable(false);
                         boardWidthVBox.setVisible(true);
                         boardHeightVBox.setVisible(true);
                         selectNeighborhoodComboBox.setVisible(true);
@@ -252,6 +308,7 @@ public class GraphicUserInterface extends Application {
                         automaton1DRulesVBox.setVisible(false);
                         break;
                     case AUTOMATON_1D:
+                        settingAcceptButton.setDisable(true);
                         boardWidthVBox.setVisible(true);
                         boardHeightVBox.setVisible(false);
                         selectNeighborhoodComboBox.setVisible(false);
