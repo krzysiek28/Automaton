@@ -28,11 +28,9 @@ public class Board {
 
     private int yCells;
 
-    private Map<CellCoordinates, CellState> cells;
-
     private Pane board;
 
-    private Map<CellCoordinates2D, Tile> tileMap = new HashMap<>();
+    private Map<CellCoordinates, Tile> tileMap = new HashMap<>();
 
     private Set<Cell> cellSet;
 
@@ -45,7 +43,7 @@ public class Board {
     public Board(Automaton automaton){
         this.automaton = automaton;
         this.cellSet = automaton.getCellSet();
-        this.cells = automaton.getCells();
+        Map<CellCoordinates, CellState> cells = automaton.getCells();
         this.xCells = resolveXCellCount(cells.keySet());
         this.yCells = resolveYCellCount(cells.keySet());
         initBoard();
@@ -107,21 +105,48 @@ public class Board {
         double cellWidth = BOARD_WIDTH/xCells;
         double cellHeight = BOARD_HEIGHT/yCells;
 
+        boolean is2DCoordinated = cellSet.stream().anyMatch(cell -> cell.getCoordinates().getClass().isAssignableFrom(CellCoordinates2D.class));
+
+        if(is2DCoordinated){
+            createBoardFor2DCoordinates(cellWidth, cellHeight, cellSet);
+        } else {
+            createBoardFor1DCoordinates(cellWidth, cellHeight, cellSet);
+        }
+    }
+
+    private void createBoardFor1DCoordinates(double cellWidth, double cellHeight, Set<Cell> cellSet){
+        for(Cell cell : cellSet){
+            Tile tile = new Tile(cellWidth, cellHeight, cell.getState());
+            tile.setTranslateX(cellWidth * ((CellCoordinates1D)cell.getCoordinates()).getX());
+            tile.setTranslateY(10);
+            tileMap.put(cell.getCoordinates(), tile);
+            board.getChildren().add(tile);
+        }
+    }
+
+    private void createBoardFor2DCoordinates(double cellWidth, double cellHeight, Set<Cell> cellSet){
         for(Cell cell : cellSet){
             Tile tile = new Tile(cellWidth, cellHeight, cell.getState());
             tile.setTranslateX(cellWidth * ((CellCoordinates2D)cell.getCoordinates()).getX());
             tile.setTranslateY(cellHeight * ((CellCoordinates2D)cell.getCoordinates()).getY());
-            tileMap.put((CellCoordinates2D) cell.getCoordinates(), tile);
+            tileMap.put(cell.getCoordinates(), tile);
             board.getChildren().add(tile);
         }
     }
 
     public void update(){
+//        if(tileMap.keySet().stream().anyMatch(CellCoordinates1D.class::isInstance)){
+//            handleAutomaton1D();
+//        }
         tileMap.entrySet().stream()
                 .forEach(entry -> automaton.changeCellState(entry.getKey(), entry.getValue().getCellState()));
         automaton.nextState();
         cellSet = automaton.getCellSet();
         cellSet.forEach(cell -> tileMap.get(cell.getCoordinates()).updateCellColor(cell.getState()));
+    }
+
+    private void handleAutomaton1D(){
+
     }
 
     public void clear(){
@@ -136,16 +161,12 @@ public class Board {
     }
 
     private void addStructureCells(Tile tile){
-        CellCoordinates2D coords  = tileMap.entrySet().stream()
+        CellCoordinates2D coords  = (CellCoordinates2D)tileMap.entrySet().stream()
                 .filter(entry -> entry.getValue().equals(tile))
                 .map(Map.Entry::getKey)
                 .findFirst()
                 .get();
-        Map<CellCoordinates2D, CellState> structureMap
-
-
-
-                = StructureHelper.putGun(coords, xCells, yCells);
+        Map<CellCoordinates2D, CellState> structureMap;
         switch (this.structureKind){
             case BLOCK:
                 structureMap = StructureHelper.putBlock(coords, xCells, yCells);
@@ -159,6 +180,8 @@ public class Board {
             case GUN:
                 structureMap = StructureHelper.putGun(coords, xCells, yCells);
                 break;
+            default:
+                structureMap = new HashMap<>();
         }
 
         for (Map.Entry<CellCoordinates2D, CellState> entry : structureMap.entrySet()){

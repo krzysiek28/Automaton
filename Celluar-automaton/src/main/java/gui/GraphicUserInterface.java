@@ -2,7 +2,7 @@ package gui;
 
 import automaton.Automaton;
 import cell.states.BinaryState;
-import cell.states.UniformStateFactory;
+import cell.states.StateFactory;
 import game.GameOfLife;
 import game.GameOfLifeHelper;
 import game.Rule256;
@@ -91,6 +91,14 @@ public class GraphicUserInterface extends Application {
     private HBox structurePanelHBox = new HBox();
 
     private HBox bottomPanelHBox = new HBox();
+
+    private Button addBlockButton = new Button();
+
+    private Button addKiteButton = new Button();
+
+    private Button addBoatButton = new Button();
+
+    private Button addGunButton = new Button();
 
     public GraphicUserInterface(){
     }
@@ -229,28 +237,24 @@ public class GraphicUserInterface extends Application {
     }
 
     private void addBlockButton(){
-        Button addBlockButton = new Button();
         addBlockButton.setText("Klocek");
         addBlockButtonListener(addBlockButton);
         structurePanelHBox.getChildren().add(addBlockButton);
     }
 
     private void addKiteButton(){
-        Button addKiteButton = new Button();
         addKiteButton.setText("Latawiec");
         addKiteButtonListener(addKiteButton);
         structurePanelHBox.getChildren().add(addKiteButton);
     }
 
     private void addBoatButton(){
-        Button addBoatButton = new Button();
         addBoatButton.setText("Łódź");
         addBoatButtonListener(addBoatButton);
         structurePanelHBox.getChildren().add(addBoatButton);
     }
 
     private void addGunButton(){
-        Button addGunButton = new Button();
         addGunButton.setText("Działo");
         addGunButtonListener(addGunButton);
         structurePanelHBox.getChildren().add(addGunButton);
@@ -297,7 +301,7 @@ public class GraphicUserInterface extends Application {
             @Override public void changed(ObservableValue observableValue, String oldValue, String currentValue) {
                 switch (currentValue){
                     case GAME_OF_LIFE:
-                        settingAcceptButton.setDisable(false);
+//                        settingAcceptButton.setDisable(false);
                         boardWidthVBox.setVisible(true);
                         boardHeightVBox.setVisible(true);
                         selectNeighborhoodComboBox.setVisible(true);
@@ -306,9 +310,13 @@ public class GraphicUserInterface extends Application {
                         aliveRulesVBox.setVisible(true);
                         deadRulesVBox.setVisible(true);
                         automaton1DRulesVBox.setVisible(false);
+                        addBlockButton.setVisible(true);
+                        addKiteButton.setVisible(true);
+                        addBoatButton.setVisible(true);
+                        addGunButton.setVisible(true);
                         break;
                     case AUTOMATON_1D:
-                        settingAcceptButton.setDisable(true);
+//                        settingAcceptButton.setDisable(true);
                         boardWidthVBox.setVisible(true);
                         boardHeightVBox.setVisible(false);
                         selectNeighborhoodComboBox.setVisible(false);
@@ -317,6 +325,10 @@ public class GraphicUserInterface extends Application {
                         aliveRulesVBox.setVisible(false);
                         deadRulesVBox.setVisible(false);
                         automaton1DRulesVBox.setVisible(true);
+                        addBlockButton.setVisible(false);
+                        addKiteButton.setVisible(false);
+                        addBoatButton.setVisible(false);
+                        addGunButton.setVisible(false);
                         break;
                     default:
                         break;
@@ -349,7 +361,7 @@ public class GraphicUserInterface extends Application {
                         mainWindow.add(board.getBoardPane(), 1,0);
                         break;
                     case AUTOMATON_1D:
-                        Automaton automaton1D = new Rule256(new UniformStateFactory(BinaryState.DEAD),
+                        Automaton automaton1D = new Rule256(new StateFactory(BinaryState.DEAD),
                                 new Neighborhood1D((int)widthSlider.getValue()), (int)widthSlider.getValue(),
                                 automaton1DRulesSpinner.getValue());
                         board = new Board(automaton1D);
@@ -373,7 +385,7 @@ public class GraphicUserInterface extends Application {
 
     public void start(Stage stage) {
         Automaton automaton = new GameOfLife(
-                new UniformStateFactory(BinaryState.DEAD),
+                new StateFactory(BinaryState.DEAD),
                 new MooreNeighborhood(1, false, xCellCount, yCellCount), xCellCount, yCellCount,
                 GameOfLifeHelper.convertStringToCellRulesList("3,2"),
                 GameOfLifeHelper.convertStringToCellRulesList("3"));
@@ -390,7 +402,7 @@ public class GraphicUserInterface extends Application {
          String aliveRules, String deadRules){
         CellNeighborhood neighborhood = resolveNeighborhood2D(xCellCount, yCellCount, mapWrapping, radius);
         return new GameOfLife(
-            new UniformStateFactory(BinaryState.DEAD),
+            new StateFactory(BinaryState.DEAD),
             neighborhood, xCellCount, yCellCount,
             GameOfLifeHelper.convertStringToCellRulesList(aliveRules),
             GameOfLifeHelper.convertStringToCellRulesList(deadRules));

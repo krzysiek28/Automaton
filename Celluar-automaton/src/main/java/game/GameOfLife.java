@@ -29,8 +29,8 @@ public class GameOfLife extends Automaton2Dim {
     }
 
     @Override
-    public CellState nextCellState(Cell currentCell, Set<Cell> neighborState){
-        int livingCount = resolveLivingCellCount(neighborState);
+    public CellState nextCellState(Cell currentCell, Set<Cell> neighbors){
+        int livingCount = resolveLivingCellCount(neighbors);
 
         if(currentCell.getState() == BinaryState.ALIVE){
             return resolveNewState(livingCount, aliveRules);

@@ -2,11 +2,11 @@ package cell.states;
 
 import cell.coordinates.CellCoordinates;
 
-public class UniformStateFactory implements CellStateFactory {
+public class StateFactory implements CellStateFactory {
 
     private CellState state;
 
-    public UniformStateFactory(CellState state){
+    public StateFactory(CellState state){
         this.state = state;
     }
 

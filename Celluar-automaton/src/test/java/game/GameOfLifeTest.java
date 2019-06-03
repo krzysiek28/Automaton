@@ -6,8 +6,7 @@ import cell.coordinates.CellCoordinates;
 import cell.coordinates.CellCoordinates2D;
 import cell.states.BinaryState;
 import cell.states.CellState;
-import cell.states.UniformStateFactory;
-import game.GameOfLife;
+import cell.states.StateFactory;
 import neighbor.MooreNeighborhood;
 import org.junit.Before;
 import org.junit.Test;
@@ -60,7 +59,7 @@ public class GameOfLifeTest {
     @Before
     public void setUp(){
         automaton = new GameOfLife(
-                new UniformStateFactory(BinaryState.DEAD),
+                new StateFactory(BinaryState.DEAD),
                 new MooreNeighborhood(RADIUS, MAP_WRAPPING, WIDTH, HEIGHT),
                 WIDTH, HEIGHT,
                 GameOfLifeHelper.convertStringToCellRulesList(ALIVE_RULES),
